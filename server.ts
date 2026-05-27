@@ -20,15 +20,21 @@ app.post('/api/analyze-medicine', async (req, res) => {
       return res.status(400).json({ error: 'Image is required' });
     }
 
-    const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+    const base64Data = image.replace(/^data:.*?;base64,/, '');
     const buffer = Buffer.from(base64Data, 'base64');
 
     console.log("-----------------------------------------");
     console.log("[OCR] Starting image text extraction...");
 
-    // 1. OCR Extract Text (to help even if blurred)
-    const { data: { text } } = await Tesseract.recognize(buffer, 'eng');
-    console.log("[OCR] Extracted text snippet:", text.replace(/\n/g, ' ').substring(0, 150), '...');
+    let text = "";
+    try {
+      // 1. OCR Extract Text (to help even if blurred)
+      const result = await Tesseract.recognize(buffer, 'eng');
+      text = result.data.text;
+      console.log("[OCR] Extracted text snippet:", text.replace(/\n/g, ' ').substring(0, 150), '...');
+    } catch (ocrError) {
+      console.warn("[OCR] Text extraction failed or is unavailable in this environment. Proceeding with image only resolving.");
+    }
 
     // 2. Query Gemini with OCR text + Original Image
     const prompt = `Analyze this image of a medicine (packaging, bottle, or tablet).
