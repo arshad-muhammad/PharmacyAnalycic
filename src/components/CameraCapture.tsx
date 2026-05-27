@@ -50,12 +50,30 @@ export function CameraCapture({ onCapture, isLoading }: CameraCaptureProps) {
 
   const capturePhoto = () => {
     if (videoRef.current) {
+      const video = videoRef.current;
       const canvas = document.createElement('canvas');
-      canvas.width = videoRef.current.videoWidth;
-      canvas.height = videoRef.current.videoHeight;
+      const MAX_WIDTH = 1000;
+      const MAX_HEIGHT = 1000;
+      let width = video.videoWidth;
+      let height = video.videoHeight;
+      
+      if (width > height) {
+        if (width > MAX_WIDTH) {
+          height *= MAX_WIDTH / width;
+          width = MAX_WIDTH;
+        }
+      } else {
+        if (height > MAX_HEIGHT) {
+          width *= MAX_HEIGHT / height;
+          height = MAX_HEIGHT;
+        }
+      }
+
+      canvas.width = width;
+      canvas.height = height;
       const ctx = canvas.getContext('2d');
       if (ctx) {
-        ctx.drawImage(videoRef.current, 0, 0);
+        ctx.drawImage(video, 0, 0, width, height);
         const dataUrl = canvas.toDataURL('image/jpeg', 0.8);
         setPreviewImage({ url: dataUrl, mimeType: 'image/jpeg' });
         stopCamera();
@@ -68,8 +86,36 @@ export function CameraCapture({ onCapture, isLoading }: CameraCaptureProps) {
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setPreviewImage({ url: reader.result as string, mimeType: file.type });
-        stopCamera();
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const MAX_WIDTH = 1000;
+          const MAX_HEIGHT = 1000;
+          let width = img.width;
+          let height = img.height;
+
+          if (width > height) {
+            if (width > MAX_WIDTH) {
+              height *= MAX_WIDTH / width;
+              width = MAX_WIDTH;
+            }
+          } else {
+            if (height > MAX_HEIGHT) {
+              width *= MAX_HEIGHT / height;
+              height = MAX_HEIGHT;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          if (ctx) {
+             ctx.drawImage(img, 0, 0, width, height);
+             setPreviewImage({ url: canvas.toDataURL('image/jpeg', 0.8), mimeType: 'image/jpeg' });
+          }
+          stopCamera();
+        };
+        img.src = reader.result as string;
       };
       reader.readAsDataURL(file);
     }

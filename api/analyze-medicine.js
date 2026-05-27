@@ -1,17 +1,10 @@
-import express from 'express';
-import path from 'path';
-import { createServer as createViteServer } from 'vite';
-import { GoogleGenAI } from '@google/genai';
-import dotenv from 'dotenv';
-dotenv.config();
+const { GoogleGenAI } = require('@google/genai');
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-const app = express();
-const PORT = 3000;
+module.exports = exports = async function handler(req, res) {
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
-app.use(express.json({ limit: '10mb' }));
-
-app.post('/api/analyze-medicine', async (req, res) => {
   try {
     const { image, mimeType } = req.body;
 
@@ -24,14 +17,13 @@ app.post('/api/analyze-medicine', async (req, res) => {
       base64Data = base64Data.split('base64,')[1];
     }
 
-    console.log("-----------------------------------------");
-    console.log("[Engine] Starting Gemini Vision OCR and Analysis...");
+    const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
     const prompt = `Analyze this image of a medicine (packaging, bottle, or tablet).
 Act as an expert AI medicine recognizer. Even if the image is slightly blurred, carefully read the text physically present on the medicine to determine its brand name, active ingredients, dosage, and usage instructions.
 
 Extract and structure the following information in strict JSON format.
-If you cannot identify the medicine at all, or if the image is completely unrelated to medicine, return {"identified": false, "name": "Unknown", ...}.
+If you cannot identify the medicine at all, or if the image is completely unrelated to medicine, return {"identified": false, "name": "Unknown", precautions: [], sideEffects: [], alternatives: [], composition: []}.
 Ensure your response is valid JSON that can be parsed by JSON.parse().
 Do NOT wrap the response in markdown blocks like \`\`\`json. Just return the raw JSON object.
 
@@ -72,37 +64,12 @@ The required JSON structure is:
 
     try {
       const parsedData = JSON.parse(rawText);
-      res.json(parsedData);
-      console.log("[Engine] Analysis Extracted:", parsedData.name);
+      res.status(200).json(parsedData);
     } catch (parseError) {
-      console.error("Failed to parse Gemini response as JSON:", rawText);
       res.status(500).json({ error: 'Failed to process AI response into structured data.' });
     }
 
-  } catch (error: any) {
-    console.error('[API Router] Error analyzing medicine:', error);
-    res.status(500).json({ error: error.message || 'Network failure or an error occurred during analysis.' });
+  } catch (error) {
+    res.status(500).json({ error: error.message || 'Network failure or an error occurred' });
   }
-});
-
-async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
-  }
-
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
 }
-
-startServer();
