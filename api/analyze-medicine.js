@@ -1,6 +1,15 @@
-const { GoogleGenAI } = require('@google/genai');
+import { GoogleGenAI } from '@google/genai';
 
-module.exports = exports = async function handler(req, res) {
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+    responseLimit: false,
+  },
+};
+
+export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
@@ -79,13 +88,3 @@ The required JSON structure is:
     res.status(500).json({ error: error.message || 'Network failure or an error occurred' });
   }
 }
-
-// Config for Vercel to increase payload size limits
-module.exports.config = {
-  api: {
-    bodyParser: {
-      sizeLimit: '10mb',
-    },
-    responseLimit: false,
-  },
-};
