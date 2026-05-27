@@ -43,7 +43,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f9f8f4] font-sans text-[#2d332e] selection:bg-[#e9e7df] pb-16">
+    <div className="min-h-screen flex flex-col bg-[#f9f8f4] font-sans text-[#2d332e] selection:bg-[#e9e7df]">
       {/* Header */}
       <header className="bg-[#f9f8f4] sticky top-0 z-50 pt-8 pb-4">
         <div className="max-w-5xl mx-auto px-4 lg:px-8 h-16 flex items-center justify-between border-b-2 border-transparent">
@@ -80,7 +80,7 @@ export default function App() {
       </header>
 
       {/* Main Content */}
-      <main className="max-w-5xl mx-auto px-4 lg:px-8 pt-8 sm:pt-12">
+      <main className="flex-grow max-w-5xl mx-auto px-4 lg:px-8 pt-8 sm:pt-12 w-full">
         <AnimatePresence mode="wait">
           {!medicineData ? (
             <motion.div
@@ -125,6 +125,26 @@ export default function App() {
           )}
         </AnimatePresence>
       </main>
+
+      {/* Footer */}
+      <footer className="mt-24 border-t border-[#e5e2d9] pt-12 pb-12">
+        <div className="max-w-4xl mx-auto px-4 flex flex-col items-center">
+          <p className="text-xs font-bold tracking-widest uppercase text-[#5a6b5d] mb-6 text-center">
+            As a part of IDT Project built by Batch 9
+          </p>
+          <div className="flex flex-wrap justify-center gap-x-4 gap-y-3 text-sm text-[#7e7868] font-medium text-center md:gap-x-6">
+            <span>G M AYSHATH AFEEZA</span>
+            <span className="hidden md:inline text-[#c8c6be]">|</span>
+            <span>GAMINI K</span>
+            <span className="hidden md:inline text-[#c8c6be]">|</span>
+            <span>HAMZATHUL KARRAR S H</span>
+            <span className="hidden md:inline text-[#c8c6be]">|</span>
+            <span>HANA FATHIMA SUDHARSHANA K</span>
+            <span className="hidden md:inline text-[#c8c6be]">|</span>
+            <span>SUJAN N</span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
