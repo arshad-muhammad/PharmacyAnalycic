@@ -16,6 +16,12 @@ module.exports = exports = async function handler(req, res) {
     if (base64Data.includes('base64,')) {
       base64Data = base64Data.split('base64,')[1];
     }
+    
+    // Clean string to prevent "The string did not match the expected pattern" InvalidCharacterError
+    base64Data = base64Data.replace(/[^A-Za-z0-9+/=]/g, '');
+    while (base64Data.length % 4 !== 0) {
+      base64Data += '=';
+    }
 
     const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -73,3 +79,13 @@ The required JSON structure is:
     res.status(500).json({ error: error.message || 'Network failure or an error occurred' });
   }
 }
+
+// Config for Vercel to increase payload size limits
+module.exports.config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '10mb',
+    },
+    responseLimit: false,
+  },
+};
