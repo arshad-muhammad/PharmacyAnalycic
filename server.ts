@@ -1,6 +1,7 @@
 import express from 'express';
 import path from 'path';
 import { createServer as createViteServer } from 'vite';
+import Tesseract from 'tesseract.js';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
 dotenv.config();
@@ -9,22 +10,36 @@ const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const app = express();
 const PORT = 3000;
 
-// Increase payload limit for base64 images
 app.use(express.json({ limit: '10mb' }));
 
 app.post('/api/analyze-medicine', async (req, res) => {
   try {
     const { image, mimeType } = req.body;
-    
+
     if (!image) {
       return res.status(400).json({ error: 'Image is required' });
     }
 
     const base64Data = image.replace(/^data:image\/\w+;base64,/, '');
+    const buffer = Buffer.from(base64Data, 'base64');
 
+    console.log("-----------------------------------------");
+    console.log("[OCR] Starting image text extraction...");
+
+    // 1. OCR Extract Text (to help even if blurred)
+    const { data: { text } } = await Tesseract.recognize(buffer, 'eng');
+    console.log("[OCR] Extracted text snippet:", text.replace(/\n/g, ' ').substring(0, 150), '...');
+
+    // 2. Query Gemini with OCR text + Original Image
     const prompt = `Analyze this image of a medicine (packaging, bottle, or tablet).
+I have also run OCR on this image which may help if the image is blurred. Here is the raw extracted text:
+"""
+${text}
+"""
+
+Using both the image and the OCR text context, identify the medicine accurately. 
 Extract and structure the following information in strict JSON format.
-If you cannot identify the medicine, return an error message in the JSON.
+If you cannot identify the medicine, at least try to guess based on the OCR raw text, or return an error message in the JSON.
 Ensure your response is valid JSON that can be parsed by JSON.parse().
 Do NOT wrap the response in markdown blocks like \`\`\`json. Just return the raw JSON object.
 
@@ -49,11 +64,11 @@ The required JSON structure is:
           role: 'user',
           parts: [
             { text: prompt },
-            { 
-              inlineData: { 
-                data: base64Data, 
-                mimeType: mimeType || 'image/jpeg' 
-              } 
+            {
+              inlineData: {
+                data: base64Data,
+                mimeType: mimeType || 'image/jpeg'
+              }
             }
           ]
         }
@@ -72,8 +87,8 @@ The required JSON structure is:
     }
 
   } catch (error: any) {
-    console.error('Error analyzing medicine:', error);
-    res.status(500).json({ error: error.message || 'An error occurred during analysis.' });
+    console.error('[API Router] Error analyzing medicine:', error);
+    res.status(500).json({ error: error.message || 'Network failure or an error occurred during analysis.' });
   }
 });
 

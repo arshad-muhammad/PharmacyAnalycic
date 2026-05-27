@@ -1,9 +1,19 @@
-import React, { useRef, useState, useCallback } from 'react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { Camera, ImageUp, RotateCcw, Check, X } from 'lucide-react';
 
 interface CameraCaptureProps {
   onCapture: (base64: string, mimeType: string) => void;
   isLoading: boolean;
+}
+
+function LoadingStatus() {
+  const [text, setText] = useState('Scanning image / OCR... ');
+  useEffect(() => {
+    const t1 = setTimeout(() => setText('Analyzing with Gemini AI...'), 2000);
+    const t2 = setTimeout(() => setText('Structuring medicine data...'), 4500);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, []);
+  return <p className="text-[10px] font-mono tracking-widest uppercase opacity-80 mt-2">{text}</p>;
 }
 
 export function CameraCapture({ onCapture, isLoading }: CameraCaptureProps) {
@@ -165,7 +175,7 @@ export function CameraCapture({ onCapture, isLoading }: CameraCaptureProps) {
           {isLoading && (
             <div className="absolute inset-0 flex flex-col items-center justify-center text-white bg-slate-900/50 backdrop-blur-sm z-10 transition-opacity">
               <div className="w-12 h-12 border-4 border-[#5a6b5d] border-t-transparent rounded-full animate-spin mb-4"></div>
-              <p className="text-[10px] font-mono tracking-widest uppercase opacity-80 mt-2">Scanning... [OCR_ACTIVE]</p>
+              <LoadingStatus />
             </div>
           )}
 
