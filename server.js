@@ -10,7 +10,6 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const app = express();
 const PORT = 3000;
 
@@ -63,23 +62,62 @@ The required JSON structure is:
   "purchaseQuery": string (A search query string that could be used on an online pharmacy, like "buy [medicine name]")
 }`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
-      contents: [
-        {
-          role: 'user',
-          parts: [
-            { text: prompt },
-            {
-              inlineData: {
-                data: base64Data,
-                mimeType: mimeType || 'image/jpeg'
-              }
-            }
+    // Get primary and secondary keys dynamically
+    const primaryKey = process.env.GEMINI_API_KEY;
+    const secondaryKey = process.env.GEMINI_API_KEY_2 || process.env.GEMINI_API_KEY_SECONDARY;
+
+    let response;
+    let success = false;
+    let primaryError = null;
+
+    if (primaryKey) {
+      try {
+        console.log("[Engine] Attempting analysis with primary API key...");
+        const ai = new GoogleGenAI({ apiKey: primaryKey });
+        response = await ai.models.generateContent({
+          model: 'gemini-2.5-flash',
+          contents: [
+            { role: 'user', parts: [{ text: prompt }, { inlineData: { data: base64Data, mimeType: mimeType || 'image/jpeg' } }] }
           ]
+        });
+        success = true;
+      } catch (err) {
+        primaryError = err;
+        console.warn("[Engine] Primary API key failed:", err.message || err);
+      }
+    } else {
+      console.warn("[Engine] No primary GEMINI_API_KEY found in environment.");
+    }
+
+    if (!success && secondaryKey) {
+      const errStr = primaryError ? (primaryError.message || String(primaryError)) : "";
+      const isEligibleForFallback = !primaryKey || 
+                                    errStr.includes("429") || 
+                                    errStr.includes("RESOURCE_EXHAUSTED") || 
+                                    errStr.includes("API_KEY_INVALID") || 
+                                    errStr.includes("API key");
+
+      if (isEligibleForFallback) {
+        try {
+          console.log("[Engine] Switching to secondary API key...");
+          const aiSecondary = new GoogleGenAI({ apiKey: secondaryKey });
+          response = await aiSecondary.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: [
+              { role: 'user', parts: [{ text: prompt }, { inlineData: { data: base64Data, mimeType: mimeType || 'image/jpeg' } }] }
+            ]
+          });
+          success = true;
+        } catch (errSecondary) {
+          console.error("[Engine] Secondary API key also failed:", errSecondary.message || errSecondary);
+          throw errSecondary;
         }
-      ]
-    });
+      }
+    }
+
+    if (!success) {
+      throw primaryError || new Error("No valid Gemini API key configured or available.");
+    }
 
     let rawText = response.text || "{}";
     rawText = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
