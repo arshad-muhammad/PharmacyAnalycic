@@ -1,15 +1,23 @@
 import express from 'express';
 import path from 'path';
-import { createServer as createViteServer } from 'vite';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
 import { GoogleGenAI } from '@google/genai';
 import dotenv from 'dotenv';
+
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 const app = express();
 const PORT = 3000;
 
 app.use(express.json({ limit: '10mb' }));
+
+// Serve static files from project root (index.html, /css, /js, /assets)
+app.use(express.static(__dirname));
 
 app.post('/api/analyze-medicine', async (req, res) => {
   try {
@@ -23,7 +31,7 @@ app.post('/api/analyze-medicine', async (req, res) => {
     if (base64Data.includes('base64,')) {
       base64Data = base64Data.split('base64,')[1];
     }
-    
+
     // Clean string to prevent "The string did not match the expected pattern" InvalidCharacterError
     base64Data = base64Data.replace(/[^A-Za-z0-9+/=]/g, '');
     while (base64Data.length % 4 !== 0) {
@@ -85,30 +93,17 @@ The required JSON structure is:
       res.status(500).json({ error: 'Failed to process AI response into structured data.' });
     }
 
-  } catch (error: any) {
+  } catch (error) {
     console.error('[API Router] Error analyzing medicine:', error);
     res.status(500).json({ error: error.message || 'Network failure or an error occurred during analysis.' });
   }
 });
 
-async function startServer() {
-  if (process.env.NODE_ENV !== 'production') {
-    const vite = await createViteServer({
-      server: { middlewareMode: true },
-      appType: 'spa',
-    });
-    app.use(vite.middlewares);
-  } else {
-    const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.join(distPath, 'index.html'));
-    });
-  }
+// SPA fallback: serve index.html for any unmatched GET routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
 
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
-}
-
-startServer();
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`PharmaScan AI server running on http://localhost:${PORT}`);
+});

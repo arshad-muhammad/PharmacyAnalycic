@@ -1,0 +1,881 @@
+/* ==========================================================================
+   PharmaScan AI — Complete Vanilla CSS
+   Converted from React/Tailwind/Framer Motion
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. GOOGLE FONTS
+   -------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+/* --------------------------------------------------------------------------
+   2. CSS RESET
+   -------------------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-text-size-adjust: 100%; line-height: 1.5; scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  color: #2d332e;
+  background: #f9f8f4;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+::selection { background: #e9e7df; }
+img, video { display: block; max-width: 100%; }
+button { cursor: pointer; border: none; background: none; font: inherit; color: inherit; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+.hidden { display: none !important; }
+
+/* --------------------------------------------------------------------------
+   3. ANIMATIONS
+   -------------------------------------------------------------------------- */
+@keyframes fadeScaleIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.anim-fade-scale-in { animation: fadeScaleIn 0.4s ease-out both; }
+.anim-slide-up { animation: slideUp 0.5s ease-out both; }
+
+/* --------------------------------------------------------------------------
+   4. APP SHELL
+   -------------------------------------------------------------------------- */
+.app-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f9f8f4;
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  color: #2d332e;
+}
+
+/* --------------------------------------------------------------------------
+   5. HEADER
+   -------------------------------------------------------------------------- */
+.app-header {
+  background: #f9f8f4;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  padding-top: 2rem;
+  padding-bottom: 1rem;
+}
+.header-inner {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  height: 4rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+@media (min-width: 1024px) { .header-inner { padding: 0 2rem; } }
+
+.logo-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+}
+.logo-group:hover .logo-icon { transform: scale(1.05); }
+.logo-icon {
+  width: 2.5rem;
+  height: 2.5rem;
+  background: #5a6b5d;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+.logo-icon svg { width: 1.25rem; height: 1.25rem; }
+.logo-text {
+  font-size: 1.5rem;
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #3a443c;
+}
+.logo-ai { font-family: 'Inter', sans-serif; opacity: 0.7; font-weight: 500; }
+
+/* Nav */
+.header-nav {
+  display: none;
+  gap: 1.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  opacity: 0.8;
+  color: #3a443c;
+}
+@media (min-width: 768px) { .header-nav { display: flex; } }
+.nav-link { cursor: pointer; transition: opacity 0.2s; }
+.nav-link:hover { opacity: 1; }
+.nav-link--active { border-bottom: 2px solid #5a6b5d; padding-bottom: 0.25rem; }
+
+/* Header buttons */
+.header-actions { display: flex; align-items: center; gap: 1rem; }
+.header-home-btn {
+  width: 2.5rem;
+  height: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  border: 1px solid #e5e2d9;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  color: #5a6b5d;
+  transition: background 0.2s;
+}
+.header-home-btn:hover { background: #f5f4ef; }
+.header-wallet-btn {
+  display: none;
+  background: #5a6b5d;
+  color: white;
+  padding: 0.625rem 1.5rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: background 0.2s;
+}
+.header-wallet-btn:hover { background: #4a584c; }
+@media (min-width: 640px) { .header-wallet-btn { display: block; } }
+
+/* --------------------------------------------------------------------------
+   6. MAIN
+   -------------------------------------------------------------------------- */
+.app-main {
+  flex-grow: 1;
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 0;
+  width: 100%;
+}
+@media (min-width: 640px) { .app-main { padding-top: 3rem; } }
+@media (min-width: 1024px) { .app-main { padding-left: 2rem; padding-right: 2rem; } }
+
+/* --------------------------------------------------------------------------
+   7. CAPTURE VIEW
+   -------------------------------------------------------------------------- */
+.capture-view {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.capture-hero {
+  text-align: center;
+  max-width: 36rem;
+  margin: 0 auto 2.5rem;
+}
+.hero-title {
+  font-size: 2.25rem;
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  color: #3a443c;
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+}
+.hero-subtitle {
+  color: #7e7868;
+  font-size: 1.125rem;
+  max-width: 28rem;
+  margin: 0 auto;
+  line-height: 1.625;
+}
+
+/* Error */
+.error-banner {
+  width: 100%;
+  max-width: 28rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background: #f5f4ef;
+  border: 1px solid #a45c5c;
+  color: #a45c5c;
+  border-radius: 24px;
+  font-size: 0.875rem;
+  text-align: center;
+  font-weight: 500;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+/* Disclaimer */
+.disclaimer {
+  margin-top: 3rem;
+  text-align: center;
+}
+.disclaimer p {
+  font-size: 0.75rem;
+  color: #8e8a7d;
+  max-width: 28rem;
+  margin: 0 auto;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   8. CAPTURE CARD
+   -------------------------------------------------------------------------- */
+.capture-card {
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto;
+  background: white;
+  border-radius: 32px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border: 1px solid #e5e2d9;
+  overflow: hidden;
+}
+
+/* Initial state */
+.capture-initial {
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  text-align: center;
+}
+.capture-icon-circle {
+  width: 5rem;
+  height: 5rem;
+  background: #f5f4ef;
+  color: #5a6b5d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin-bottom: 0.5rem;
+}
+.capture-title {
+  font-size: 1.25rem;
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  color: #3a443c;
+}
+.capture-subtitle {
+  font-size: 0.875rem;
+  color: #7e7868;
+  margin-top: 0.5rem;
+}
+.capture-buttons {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   9. BUTTONS
+   -------------------------------------------------------------------------- */
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: #5a6b5d;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: background 0.2s;
+}
+.btn-primary:hover { background: #4a584c; }
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: white;
+  border: 1px solid #e5e2d9;
+  color: #2d332e;
+  padding: 0.75rem 1rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: background 0.2s;
+}
+.btn-outline:hover { background: #f5f4ef; }
+.btn-full { width: 100%; }
+
+/* OR divider */
+.or-divider {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+}
+.or-line { flex-grow: 1; border-top: 1px solid #e5e2d9; }
+.or-text {
+  flex-shrink: 0;
+  margin: 0 1rem;
+  color: #8e8a7d;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* --------------------------------------------------------------------------
+   10. CAMERA FEED
+   -------------------------------------------------------------------------- */
+.camera-feed {
+  position: relative;
+  background: black;
+  width: 100%;
+  aspect-ratio: 4/5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+@media (min-width: 640px) { .camera-feed { aspect-ratio: 16/9; } }
+.camera-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Viewfinder */
+.viewfinder {
+  position: absolute;
+  inset: 1rem;
+  border: 2px solid rgba(255,255,255,0.5);
+  border-radius: 0.75rem;
+  pointer-events: none;
+}
+.viewfinder-h {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  border-top: 1px solid rgba(255,255,255,0.2);
+  pointer-events: none;
+}
+.viewfinder-v {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  height: 100%;
+  border-left: 1px solid rgba(255,255,255,0.2);
+  pointer-events: none;
+}
+
+/* Camera controls */
+.camera-controls {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: 0 1.5rem;
+}
+.camera-close-btn {
+  padding: 0.75rem;
+  background: rgba(255,255,255,0.2);
+  color: white;
+  border-radius: 50%;
+  transition: background 0.2s;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+.camera-close-btn:hover { background: rgba(255,255,255,0.3); }
+.camera-capture-btn {
+  width: 4rem;
+  height: 4rem;
+  background: white;
+  border-radius: 50%;
+  border: 4px solid rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+.camera-capture-btn:hover { transform: scale(1.05); }
+.camera-capture-inner {
+  width: 3rem;
+  height: 3rem;
+  background: white;
+  border-radius: 50%;
+}
+.camera-spacer { width: 3rem; }
+
+/* --------------------------------------------------------------------------
+   11. PREVIEW
+   -------------------------------------------------------------------------- */
+.preview-container {
+  position: relative;
+  background: #0f172a;
+  width: 100%;
+  aspect-ratio: 4/5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+@media (min-width: 640px) { .preview-container { aspect-ratio: 16/9; } }
+.preview-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: all 0.3s;
+}
+.preview-img--loading {
+  opacity: 0.5;
+  filter: grayscale(1) blur(4px);
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: rgba(15,23,42,0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 10;
+}
+.spinner {
+  width: 3rem;
+  height: 3rem;
+  border: 4px solid #5a6b5d;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+.loading-status-text {
+  font-size: 10px;
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, monospace;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  opacity: 0.8;
+  margin-top: 0.5rem;
+}
+
+/* Preview action bar */
+.preview-actions {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.5rem;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+.btn-glass {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.25rem;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  color: white;
+  border-radius: 9999px;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: background 0.2s;
+}
+.btn-glass:hover { background: rgba(255,255,255,0.2); }
+.btn-primary-sm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1.5rem;
+  background: #5a6b5d;
+  color: white;
+  border-radius: 9999px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  box-shadow: 0 4px 6px rgba(90,107,93,0.3);
+  transition: background 0.2s;
+}
+.btn-primary-sm:hover { background: #4a584c; }
+
+/* --------------------------------------------------------------------------
+   12. NOT IDENTIFIED CARD
+   -------------------------------------------------------------------------- */
+.not-identified-card {
+  width: 100%;
+  max-width: 32rem;
+  margin: 0 auto;
+  background: white;
+  border-radius: 32px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border: 1px solid #e5e2d9;
+  overflow: hidden;
+  padding: 2rem;
+  text-align: center;
+}
+.not-identified-icon {
+  width: 4rem;
+  height: 4rem;
+  background: #f5f4ef;
+  color: #a45c5c;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  border: 1px solid #e5e2d9;
+}
+.not-identified-title {
+  font-size: 1.25rem;
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  color: #3a443c;
+  margin-bottom: 0.5rem;
+}
+.not-identified-text {
+  color: #7e7868;
+  font-size: 0.875rem;
+  margin-bottom: 1.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   13. MEDICINE DETAILS
+   -------------------------------------------------------------------------- */
+.medicine-card {
+  width: 100%;
+  max-width: 48rem;
+  margin: 0 auto;
+  background: white;
+  border-radius: 32px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border: 1px solid #e5e2d9;
+  overflow: hidden;
+}
+
+/* Header */
+.medicine-header {
+  background: #e9e7df;
+  border-bottom: 1px solid #e5e2d9;
+  padding: 1.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  color: #2d332e;
+}
+@media (min-width: 640px) { .medicine-header { padding: 2rem; } }
+.medicine-header-bg {
+  position: absolute;
+  top: -3rem;
+  right: -3rem;
+  opacity: 0.05;
+  color: #5a6b5d;
+}
+.medicine-header-bg svg { width: 16rem; height: 16rem; }
+.medicine-header-content { position: relative; z-index: 10; }
+.id-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  background: rgba(255,255,255,0.6);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  border: 1px solid white;
+  border-radius: 9999px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+  color: #8e8a7d;
+}
+.medicine-name {
+  font-size: 1.875rem;
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  font-style: italic;
+  margin-bottom: 0.75rem;
+  color: #2d332e;
+}
+.comp-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  color: #5a6b5d;
+}
+.comp-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.comp-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(90,107,93,0.5);
+  display: inline-block;
+}
+
+/* Body */
+.medicine-body {
+  padding: 1.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background: #fcfbf9;
+}
+@media (min-width: 640px) { .medicine-body { padding: 2rem; } }
+
+/* Section headings */
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-weight: 700;
+  color: #8e8a7d;
+  border-bottom: 1px solid #e5e2d9;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  font-family: 'Inter', sans-serif;
+}
+.icon-activity { color: #5a6b5d; display: inline-flex; }
+.icon-warn { color: #a45c5c; display: inline-flex; }
+
+/* Info grid */
+.info-grid {
+  display: grid;
+  gap: 1rem;
+}
+@media (min-width: 640px) { .info-grid { grid-template-columns: 1fr 1fr; } }
+.info-box {
+  background: #f5f4ef;
+  padding: 1.25rem;
+  border-radius: 24px;
+}
+.info-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #8e8a7d;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+.info-value {
+  color: #4a4f4b;
+  font-size: 0.875rem;
+  line-height: 1.625;
+  font-weight: 600;
+}
+
+/* Warnings */
+.warnings-content { display: flex; flex-direction: column; gap: 1rem; }
+.section-sublabel {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #4a4f4b;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.section-sublabel--mt { margin-top: 1.25rem; }
+.precaution-list { display: flex; flex-direction: column; gap: 0.5rem; }
+.precaution-item {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4a4f4b;
+  line-height: 1.625;
+}
+.precaution-bullet { color: #a45c5c; font-weight: 700; }
+
+/* Side effects */
+.side-effects-wrap { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.side-effect-badge {
+  padding: 0.25rem 0.75rem;
+  background: #f5f4ef;
+  color: #7e7868;
+  border-radius: 0.375rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #e5e2d9;
+}
+
+/* Safety rating */
+.safety-rating-box {
+  background: rgba(90,107,93,0.1);
+  padding: 1.25rem;
+  border-radius: 24px;
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(90,107,93,0.2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.safety-dot {
+  width: 8px;
+  height: 8px;
+  background: #5a6b5d;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.safety-text {
+  color: #3a443c;
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+.safety-value { font-weight: 400; opacity: 0.9; font-style: italic; }
+
+/* Alternatives */
+.alt-card {
+  background: #5a6b5d;
+  border-radius: 24px;
+  padding: 1.5rem 2rem;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+.alt-bg-circle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 8rem;
+  height: 8rem;
+  background: rgba(255,255,255,0.05);
+  border-bottom-left-radius: 100%;
+  pointer-events: none;
+}
+.alt-title {
+  font-size: 1.125rem;
+  font-family: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+  font-style: italic;
+  margin-bottom: 1.25rem;
+  position: relative;
+  z-index: 10;
+}
+.alt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: relative;
+  z-index: 10;
+}
+.alt-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.1);
+  padding: 1rem;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.alt-name { font-size: 0.875rem; font-weight: 500; }
+.alt-badge {
+  font-size: 10px;
+  background: rgba(255,255,255,0.2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+/* --------------------------------------------------------------------------
+   14. MEDICINE FOOTER ACTIONS
+   -------------------------------------------------------------------------- */
+.medicine-footer {
+  background: white;
+  border-top: 1px solid #e5e2d9;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+}
+@media (min-width: 640px) {
+  .medicine-footer { flex-direction: row; }
+}
+@media (min-width: 1024px) { .medicine-footer { padding: 1.5rem 2rem; } }
+.btn-footer {
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+}
+@media (min-width: 640px) { .btn-footer { width: auto; } }
+.btn-order {
+  box-shadow: 0 4px 6px rgba(90,107,93,0.3);
+  padding: 0.75rem 2rem;
+  font-weight: 700;
+}
+
+/* --------------------------------------------------------------------------
+   15. APP FOOTER
+   -------------------------------------------------------------------------- */
+.app-footer {
+  margin-top: 6rem;
+  border-top: 1px solid #e5e2d9;
+  padding: 3rem 0;
+}
+.footer-inner {
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.footer-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #5a6b5d;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.footer-names {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: #7e7868;
+  font-weight: 500;
+  text-align: center;
+}
+@media (min-width: 768px) { .footer-names { gap: 0.75rem 1.5rem; } }
+.footer-sep { display: none; color: #c8c6be; }
+@media (min-width: 768px) { .footer-sep { display: inline; } }
+
+/* --------------------------------------------------------------------------
+   16. SCROLLBAR & PRINT
+   -------------------------------------------------------------------------- */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #f9f8f4; }
+::-webkit-scrollbar-thumb { background: #e5e2d9; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #8e8a7d; }
+
+@media print {
+  .hidden, nav, button { display: none !important; }
+  body { background: #fff; color: #000; }
+}
