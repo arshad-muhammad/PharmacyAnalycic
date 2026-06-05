@@ -234,8 +234,7 @@
           ${ICONS.home}
         </button>`;
     } else {
-      rightBtn = `
-        <button class="header-wallet-btn">Connect Wallet</button>`;
+     
     }
 
     return `
@@ -248,9 +247,7 @@
           <span class="logo-text">PharmaScan <span class="logo-ai">AI</span></span>
         </div>
         <nav class="header-nav">
-          <span class="nav-link nav-link--active">Scanner</span>
-          <span class="nav-link">My Cabinet</span>
-          <span class="nav-link">Safety Alerts</span>
+         
         </nav>
         <div class="header-actions">
           ${rightBtn}
