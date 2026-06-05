@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node server.js",
     "start": "node server.js",
-    "build": "echo \"No build step required\""
+    "build": "node -e \"const fs = require('fs'); fs.mkdirSync('dist', { recursive: true }); fs.copyFileSync('index.html', 'dist/index.html'); fs.cpSync('css', 'dist/css', { recursive: true }); fs.cpSync('js', 'dist/js', { recursive: true }); if (fs.existsSync('assets')) { fs.cpSync('assets', 'dist/assets', { recursive: true }); }\""
   },
   "dependencies": {
     "@google/genai": "^2.6.0",
